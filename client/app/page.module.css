@@ -1,9 +1,44 @@
 .main {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 6rem;
+  padding: 40px;
   min-height: 100vh;
+}
+
+.mainCard{
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-content: center;
+  text-align: center;
+  row-gap: 20px;
+  border: 2px solid rgb(0, 132, 255);
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.redirectButtons{
+  display: flex;
+  flex-direction: row;
+  column-gap: 20px;
+  justify-content: center;
+}
+
+.redirectButtons button{
+  padding: 10px;
+  background-color: #00b7ff;
+  color: #fff;
+  border: none;
+  outline: none;
+  font-weight: 500;
+  font-size: 15px;
+  border-radius: 10px;
+  transition: background-color 0.4s ease;
+}
+
+.redirectButtons button:hover{
+  background-color: #000;
 }
 

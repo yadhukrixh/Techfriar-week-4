@@ -1,0 +1,20 @@
+.mainClass{
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.mainClass div{
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    align-items: flex-end;
+}
+
+.mainClass p{
+    font-size: 8px;
+}

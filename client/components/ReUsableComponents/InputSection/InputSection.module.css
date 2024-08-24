@@ -17,3 +17,8 @@
 .inputSectionMainClass input{
   -moz-appearance: textfield; /* Firefox */
 }
+
+.inputSectionMainClass input:read-only{
+  color: #059212;
+}
+

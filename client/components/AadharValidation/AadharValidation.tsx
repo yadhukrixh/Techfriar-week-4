@@ -7,14 +7,14 @@ import { formatTime, useCountdownTimer } from '@/utils/TimeSetter';
 
 
 interface AadharValidationProps{
-    ValidStatus: boolean;
+    validStatus: boolean;
     setValidStatus: (status: boolean, aadharNumber?:string) => void;
 }
 
 const aadharRegex = /^\d{12}$/;
 
 
-const AadharValidation:FC<AadharValidationProps> = ({ValidStatus , setValidStatus}) => {
+const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatus}) => {
     const [aadharNumber , setAadharNumber] = useState('');
     const [otpButtonClicks , setOtpButtonClicks] = useState(0);
     const [errorMessage , setErrorMessage] = useState('');
@@ -61,7 +61,7 @@ const AadharValidation:FC<AadharValidationProps> = ({ValidStatus , setValidStatu
             editableStatus={isEditable}
         />
 
-        {!ValidStatus &&
+        {!validStatus &&
             <CustomizableButton
                 value={
                     otpButtonClicks>0 ? isButtonDisabled ? formatTime(timeLeft) : 'Resend' : 'Send OTP'}

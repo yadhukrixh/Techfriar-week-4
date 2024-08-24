@@ -4,12 +4,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 
 .userForm{
     width: max-content;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
     row-gap: 20px;

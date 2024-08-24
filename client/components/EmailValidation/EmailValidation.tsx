@@ -6,21 +6,10 @@ import Labels from '../ReUsableComponents/Labels/Labels';
 import InputSection from '../ReUsableComponents/InputSection/InputSection';
 import CustomizableButton from '../ReUsableComponents/CustomizableButton/CustomizableButton';
 import { useCountdownTimer , formatTime } from '@/utils/TimeSetter';
+import { sendOtpForEmailValidation } from '@/utils/SendOtpFunctions';
+import { validateOtpForEmail } from '@/utils/ValidationFunctions';
 
 
-
-
-// Define the regex pattern for email validation
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-/**
- * Validates an email address using regex.
- * @param email - The email address to validate.
- * @returns True if the email is valid, false otherwise.
- */
-const validateEmail = (email: string): boolean => {
-  return emailRegex.test(email);
-}
 
 interface EmailValidationProps {
   validStatus: boolean;
@@ -39,30 +28,6 @@ const EmailValidation: FC<EmailValidationProps> = ({ validStatus, setValidStatus
   const [showOtpSection, setShowOtpSection] = useState(false); // Controls the visibility of the OTP section
   
   
-  //validate email and send otp function
-  const sendOtp = () => {
-    if (email && validateEmail(email)){
-      setOtpButtonClicks(otpButtonClicks + 1);
-      setShowOtpSection(true); // Show OTP section
-      resetTimer();//count down start and reset timer
-      setErrorMessage('');
-    } else {
-      setErrorMessage('Please Enter a valid email');
-    }
-  };
-
-
-  // validate otp section
-  const validateOtp = () => {
-    if (otp === '123456') {
-      setValidStatus(true, email);
-      setIsEditable(true);
-      setShowOtpSection(false);
-    } else {
-      alert('Invalid OTP');
-      setValidStatus(false);
-    }
-  };
 
   return (
     <div className={styles.mainClass}>
@@ -87,7 +52,7 @@ const EmailValidation: FC<EmailValidationProps> = ({ validStatus, setValidStatus
               : 'Resend'
               : 'Send OTP'
           }
-          onClickFunction={sendOtp}
+          onClickFunction={() => sendOtpForEmailValidation(email, otpButtonClicks, setOtpButtonClicks, resetTimer, setErrorMessage, setShowOtpSection)}
           disabled={isButtonDisabled}
         />}
       </div>
@@ -105,7 +70,7 @@ const EmailValidation: FC<EmailValidationProps> = ({ validStatus, setValidStatus
             placeholder="Enter OTP"
             onChange={setOtp}
           />
-          <CustomizableButton value="Validate" onClickFunction={validateOtp} />
+          <CustomizableButton value="Validate" onClickFunction={() => validateOtpForEmail(otp, setValidStatus, email, setIsEditable, setShowOtpSection)} />
         </div>
       }
     </div>

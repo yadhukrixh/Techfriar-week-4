@@ -4,14 +4,15 @@ import Labels from '../ReUsableComponents/Labels/Labels';
 import InputSection from '../ReUsableComponents/InputSection/InputSection';
 import CustomizableButton from '../ReUsableComponents/CustomizableButton/CustomizableButton';
 import { formatTime, useCountdownTimer } from '@/utils/TimeSetter';
+import { sendOtpForPanValidation } from '@/utils/SendOtpFunctions';
+import { validateOtpForPanCard } from '@/utils/ValidationFunctions';
+
 
 interface PanCardValidationProps{
     validStatus:boolean;
     setValidStatus: (status:boolean, panCardNumber?:string) => void;
 }
 
-
-const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
 
 const PanCardValidation:FC <PanCardValidationProps> = ({validStatus,setValidStatus}) => {
@@ -27,28 +28,7 @@ const PanCardValidation:FC <PanCardValidationProps> = ({validStatus,setValidStat
     const [showOtpSection, setShowOtpSection] = useState(false);
     
 
-    const sendOtp = () => {
-        if (panNumber && panRegex.test(panNumber)){
-            setOtpButtonClicks(otpButtonClicks + 1);
-            setShowOtpSection(true); // Show OTP section
-            resetTimer();//count down start and reset timer
-            setErrorMessage('');
-          } else {
-            setErrorMessage('Please Enter a valid PAN Number');
-          }
-    }
-
-
-    const validateOtp = () =>{
-        if (otp === '123456') {
-            setValidStatus(true, panNumber);
-            setIsEditable(true);
-            setShowOtpSection(false);
-          } else {
-            alert('Invalid OTP');
-            setValidStatus(false);
-          }
-    }
+    
 
 
   return (
@@ -69,7 +49,7 @@ const PanCardValidation:FC <PanCardValidationProps> = ({validStatus,setValidStat
                         isButtonDisabled?
                         formatTime(timeLeft):"Resend":"Send OTP"
                     }
-                    onClickFunction={sendOtp}
+                    onClickFunction={() => sendOtpForPanValidation(panNumber, otpButtonClicks, setOtpButtonClicks, resetTimer, setErrorMessage, setShowOtpSection)}
                     disabled={isButtonDisabled}
                 />
             }
@@ -85,7 +65,7 @@ const PanCardValidation:FC <PanCardValidationProps> = ({validStatus,setValidStat
                     placeholder="Enter OTP"
                     onChange={setOtp}
                 />
-                <CustomizableButton value="Validate" onClickFunction={validateOtp} />
+                <CustomizableButton value="Validate" onClickFunction={() => validateOtpForPanCard(otp, setValidStatus, panNumber, setIsEditable, setShowOtpSection)} />
             </div>
         }
     </div>

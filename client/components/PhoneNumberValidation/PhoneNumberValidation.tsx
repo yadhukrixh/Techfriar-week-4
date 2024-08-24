@@ -1,19 +1,21 @@
 "use client";
 
-interface PhoneNumberValidationProps{
-    validStatus:boolean;
-    setValidStatus:(status: boolean, PhoneNumber?:string) => void;
-}
-
 import React, { FC, useState } from 'react';
 import styles from './PhoneNumberValidation.module.css';
 import Labels from '../ReUsableComponents/Labels/Labels';
 import InputSection from '../ReUsableComponents/InputSection/InputSection';
 import CustomizableButton from '../ReUsableComponents/CustomizableButton/CustomizableButton';
 import { useCountdownTimer ,formatTime } from '@/utils/TimeSetter';
+import { sendOtpForPhoneNumberValidation } from '@/utils/SendOtpFunctions';
+import { validateOtpForPhoneNumber } from '@/utils/ValidationFunctions';
 
-// Define the regex pattern for phone number validation
-const phoneNumberRegex = /^\d{10}$/;
+interface PhoneNumberValidationProps{
+  validStatus:boolean;
+  setValidStatus:(status: boolean, phoneNumber?:string) => void;
+}
+
+
+
 
 const PhoneNumberValidation:FC<PhoneNumberValidationProps> = ({validStatus,setValidStatus}) => {
 
@@ -26,30 +28,8 @@ const PhoneNumberValidation:FC<PhoneNumberValidationProps> = ({validStatus,setVa
     const [showOtpSection, setShowOtpSection] = useState(false); // Controls the visibility of the OTP section
     const [timeLeft, isButtonDisabled, resetTimer] = useCountdownTimer(30); // Use the countdown timer hook
 
-    const sendOtp= ()=> {
-        if(phoneNumber && phoneNumberRegex.test(phoneNumber)){
-            setOtpButtonClicks(otpButtonClicks + 1);
-            setShowOtpSection(true); // Show OTP section
-            setErrorMessage('');
-            resetTimer();
-        }
-        else{
-            setErrorMessage("Enter a valid Phone number");
-        }
-
-    }
 
 
-    const validateOtp = () =>{
-        if (otp === '123456') {
-            setValidStatus(true, phoneNumber);
-            setIsEditable(true);
-            setShowOtpSection(false);
-          } else {
-            alert('Invalid OTP');
-            setValidStatus(false);
-          }
-    }
 
 
 
@@ -69,7 +49,7 @@ const PhoneNumberValidation:FC<PhoneNumberValidationProps> = ({validStatus,setVa
             <CustomizableButton 
                 value={
                     otpButtonClicks > 0? isButtonDisabled?formatTime(timeLeft):'Resend':'Send OTP' }
-                onClickFunction={sendOtp}
+                onClickFunction={() => sendOtpForPhoneNumberValidation(phoneNumber, otpButtonClicks, setOtpButtonClicks, resetTimer, setErrorMessage, setShowOtpSection)}
                 disabled={isButtonDisabled}
             />
         }
@@ -85,7 +65,7 @@ const PhoneNumberValidation:FC<PhoneNumberValidationProps> = ({validStatus,setVa
                 placeholder="Enter OTP"
                 onChange={setOtp}
             />
-          <CustomizableButton value="Validate" onClickFunction={validateOtp} />
+          <CustomizableButton value="Validate" onClickFunction={() => validateOtpForPhoneNumber(otp, setValidStatus, phoneNumber, setIsEditable, setShowOtpSection)} />
         </div>
       }
     </div>

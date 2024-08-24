@@ -4,14 +4,14 @@ import Labels from '../ReUsableComponents/Labels/Labels';
 import InputSection from '../ReUsableComponents/InputSection/InputSection';
 import CustomizableButton from '../ReUsableComponents/CustomizableButton/CustomizableButton';
 import { formatTime, useCountdownTimer } from '@/utils/TimeSetter';
-
+import { validateOtpForAadhar } from '@/utils/ValidationFunctions';
+import { sendOtpForAadharValidation } from '@/utils/SendOtpFunctions';
 
 interface AadharValidationProps{
     validStatus: boolean;
     setValidStatus: (status: boolean, aadharNumber?:string) => void;
 }
 
-const aadharRegex = /^\d{12}$/;
 
 
 const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatus}) => {
@@ -25,27 +25,6 @@ const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatu
     const [timeLeft, isButtonDisabled, resetTimer] = useCountdownTimer(30);
     const [showOtpSection , setShowOtpSection] = useState(false);
 
-    const sendOtp = () => {
-        if (aadharNumber && aadharRegex.test(aadharNumber)){
-          setOtpButtonClicks(otpButtonClicks + 1);
-          setShowOtpSection(true); // Show OTP section
-          resetTimer();//count down start and reset timer
-          setErrorMessage('');
-        } else {
-          setErrorMessage('Please Enter a valid Aadhar Number');
-        }
-    };
-
-    const validateOtp = () => {
-        if (otp === '123456') {
-          setValidStatus(true,aadharNumber);
-          setIsEditable(true);
-          setShowOtpSection(false);
-        } else {
-          alert('Invalid OTP');
-          setValidStatus(false);
-        }
-      };
 
 
 
@@ -65,7 +44,7 @@ const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatu
             <CustomizableButton
                 value={
                     otpButtonClicks>0 ? isButtonDisabled ? formatTime(timeLeft) : 'Resend' : 'Send OTP'}
-                onClickFunction={sendOtp}
+                onClickFunction={() => sendOtpForAadharValidation(aadharNumber, otpButtonClicks, setOtpButtonClicks, resetTimer, setErrorMessage, setShowOtpSection)}
                 disabled={isButtonDisabled}
             />
         }
@@ -74,14 +53,14 @@ const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatu
 
       {showOtpSection && isButtonDisabled &&
         <div>
-            <Labels value='OTP' />
+            <Labels value='OTP:' />
             <InputSection
                 type="number"
                 value={otp}
                 placeholder="Enter OTP"
                 onChange={setOtp}
             />
-            <CustomizableButton value="Validate" onClickFunction={validateOtp} />
+            <CustomizableButton value="Validate" onClickFunction={() => validateOtpForAadhar(otp, setValidStatus, aadharNumber, setIsEditable, setShowOtpSection)} />
         </div>
         }
 

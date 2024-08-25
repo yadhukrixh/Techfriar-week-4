@@ -34,7 +34,7 @@ export const sendOtpForPhoneNumberValidation = (
     setErrorMessage: (message: string) => void,
     setShowOtpSection: (show: boolean) => void
 ) => {
-    if (phoneNumber && emailRegex.test(phoneNumber)) {
+    if (phoneNumber && phoneNumberRegex.test(phoneNumber)) {
         setOtpButtonClicks(otpButtonClicks + 1);
         setShowOtpSection(true); // Show OTP section
         resetTimer(); // Start and reset the countdown timer

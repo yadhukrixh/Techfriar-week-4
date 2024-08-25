@@ -58,7 +58,7 @@ const UserForm = () => {
             <PanCardValidation
             validStatus={isPanIsValid}
             setValidStatus={(status, panNumberValue)=> {
-              setIsAadharIsValid(status);
+              setIsPanIsValid(status);
               if(status && panNumberValue) setPanNumber(panNumberValue);
             }}
             />

@@ -70,7 +70,7 @@ export const validateOtpForPanCard = (
     setShowOtpSection: (show: boolean) => void
 ) => {
     if (otp === '123456') {
-        setValidStatus(true, panNumber);
+        setValidStatus(true , panNumber);
         setIsEditable(true);
         setShowOtpSection(false);
     } else {

@@ -31,7 +31,7 @@ const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatu
   return (
     <div className={styles.mainClass}>
       <div>
-        <Labels value='Aadhar Number:' />
+        <Labels value='Aadhar Number :' />
         <InputSection 
             type='number'
             value={aadharNumber}
@@ -53,7 +53,7 @@ const AadharValidation:FC<AadharValidationProps> = ({validStatus , setValidStatu
 
       {showOtpSection && isButtonDisabled &&
         <div>
-            <Labels value='OTP:' />
+            <Labels value='OTP :' />
             <InputSection
                 type="number"
                 value={otp}

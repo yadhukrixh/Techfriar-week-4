@@ -1,10 +1,13 @@
 .inputSectionMainClass input{
     outline: none;
     border: none;
+    width: 300px;
     background-color: transparent;
     border-bottom: 2px solid black !important;
-    padding: 5px;
+    padding: 8px;
+    background-color: #a0b0ceab;
     padding-bottom: 1px;
+    font-weight: 500;
 
 }
 
@@ -19,6 +22,7 @@
 }
 
 .inputSectionMainClass input:read-only{
-  color: #059212;
+  background-color: #7ed485;
+  color: #fff;
 }
 

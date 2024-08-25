@@ -36,7 +36,7 @@ const PhoneNumberValidation:FC<PhoneNumberValidationProps> = ({validStatus,setVa
   return (
     <div className={styles.mainClass}>
       <div>
-        <Labels value="Phone number:"/>
+        <Labels value="Phone number :"/>
         <InputSection 
             type="number"
             value={phoneNumber}

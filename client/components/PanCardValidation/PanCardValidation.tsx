@@ -36,7 +36,7 @@ const PanCardValidation:FC <PanCardValidationProps> = ({validStatus,setValidStat
         <div>
             <Labels value='PAN Number :'/>
             <InputSection 
-                type='number'
+                type='text'
                 value={panNumber}
                 placeholder='PAN Card Number'
                 onChange={setPanNumber}
@@ -56,7 +56,7 @@ const PanCardValidation:FC <PanCardValidationProps> = ({validStatus,setValidStat
         </div>
         <p>{errorMessage}</p>
 
-        {!showOtpSection && isButtonDisabled &&
+        {showOtpSection && isButtonDisabled &&
             <div>
                 <Labels value="OTP :" />
                 <InputSection

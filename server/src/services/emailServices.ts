@@ -1,4 +1,6 @@
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -8,10 +10,10 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendOtpEmailService = async (to: string, otp: string) => {
+export const sendOtpEmailService = async (recipientEmail: string, otp: string) => {
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to,
+        to: recipientEmail,
         subject: 'Your OTP for Email Validation',
         text: `Your OTP code is: ${otp}`,
     };
@@ -21,5 +23,6 @@ export const sendOtpEmailService = async (to: string, otp: string) => {
         console.log('OTP email sent');
     } catch (error) {
         console.error('Error sending OTP email:', error);
+        throw new Error('Failed to send email'); // Ensure you handle or re-throw the error properly
     }
 };

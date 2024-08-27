@@ -1,8 +1,14 @@
 // call various routing functions
 import express from "express";
-import { sendOtpToEmail, validateOtpForEmail } from "../controllers/auth.controllers";
+import { registerUser, validateOtpForEmail } from "../controllers/auth.controllers";
 const router = express.Router();
 
-router.post("/sendOtpToEmail",sendOtpToEmail);
+router.post("/registerUser",registerUser);
 
-router.post("validateEmailOtp",validateOtpForEmail)
+router.post("/validateEmailOtp",validateOtpForEmail);
+
+
+
+
+
+export default router;

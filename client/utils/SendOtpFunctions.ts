@@ -1,11 +1,12 @@
 
 
 import { emailRegex , phoneNumberRegex , aadharRegex , panRegex } from '@/utils/RegexFunctions';
+import axios from 'axios';
 
 
 
 // send otp to validate aadhar
-export const sendOtpForEmailValidation = (
+export const sendOtpForEmailValidation = async (
     email: string,
     otpButtonClicks: number,
     setOtpButtonClicks: (clicks: number) => void,
@@ -13,15 +14,23 @@ export const sendOtpForEmailValidation = (
     setErrorMessage: (message: string) => void,
     setShowOtpSection: (show: boolean) => void
 ) => {
-    if (email && emailRegex.test(email)) {
-        setOtpButtonClicks(otpButtonClicks + 1);
-        setShowOtpSection(true); // Show OTP section
-        resetTimer(); // Start and reset the countdown timer
-        setErrorMessage('');
-    } else {
-        setErrorMessage('Please Enter a valid email');
+    try {
+        if (email && emailRegex.test(email)) {
+            // await axios.post('http://localhost:3400/api/auth/sendOtpToEmail', { email });
+            setOtpButtonClicks(otpButtonClicks + 1);
+            setShowOtpSection(true); // Show OTP section
+            resetTimer(); // Start and reset the countdown timer
+            setErrorMessage('');
+        } else {
+            setErrorMessage('Please Enter a valid email');
+        }
+    } catch (error: any) {
+        console.error("Error on frontend:", error);
+        // You can extract and set a more specific error message based on the response
+        setErrorMessage(error?.response?.data?.error || 'Failed to send OTP. Please try again.');
     }
 };
+
 
 
 

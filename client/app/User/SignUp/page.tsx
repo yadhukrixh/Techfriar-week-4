@@ -6,6 +6,12 @@ import EmailValidation from '@/components/EmailValidation/EmailValidation';
 import PhoneNumberValidation from '@/components/PhoneNumberValidation/PhoneNumberValidation';
 import AadharValidation from '@/components/AadharValidation/AadharValidation';
 import PanCardValidation from '@/components/PanCardValidation/PanCardValidation';
+import InputSection from '@/components/ReUsableComponents/InputSection/InputSection';
+import Labels from '@/components/ReUsableComponents/Labels/Labels';
+import CustomizableButton from '@/components/ReUsableComponents/CustomizableButton/CustomizableButton';
+import { RegisterUser } from '@/utils/RegisterUser';
+import  {DateFormatter}  from '@/utils/DateFormatter'
+
 
 const UserForm = () => {
   const [isEmailIsValid, setIsEmailIsValid] = useState(false); // to set the email validation status
@@ -13,57 +19,68 @@ const UserForm = () => {
   const [isAadharIsValid , setIsAadharIsValid] = useState(false);// to set the aadhar validation status
   const [isPanIsValid , setIsPanIsValid] = useState(false);// to  set the pan validation status
 
+
+  const [name ,setName] = useState('');
   const [email, setEmail] = useState(''); // State to store the email value
+  const [dateOfBirth , setDateOfBirth] = useState(new Date());
   const [phoneNumber , setPhoneNumber] = useState('');// to stotre phone number
-  const [aadharNumber , setAadharNumber] = useState('');// to store aadhar number
-  const [panNumber , setPanNumber] = useState(''); // to store pan number
+  const [errorMessage , setErrorMessage] = useState('');
+
+  const handleDateChange = (value: string) => {
+        const newDate = new Date(value);
+        setDateOfBirth(newDate);
+  };
 
 
 
   return (
     <div className={styles.main}>
       <div className={styles.userForm}>
-        <h2 className={styles.formHeading}>Signup</h2>
+        <h2 className={styles.formHeading}>Register User</h2>
         <div>
-          {/* Email validayion component */}
-          <EmailValidation 
-            validStatus={isEmailIsValid} 
-            setValidStatus={(status, emailValue) => {
-              setIsEmailIsValid(status);
-              if (status && emailValue) setEmail(emailValue); // Set email value when OTP is validated
-            }}
+          <div>
+          <Labels value='Name :'/>
+          <InputSection type='text'
+            value={name}
+            placeholder='Your Name'
+            onChange={setName}
           />
+          </div>
 
-          {isEmailIsValid && // only shows if email is valid
-            //phone number validation component
-            <PhoneNumberValidation 
-              validStatus={isPhoneNumberIsValid} 
-              setValidStatus={(status, phoneNumberValue) => {
-                setIsPhoneNumberIsValid(status);
-                if (status && phoneNumberValue) setPhoneNumber(phoneNumberValue); // set phone number after otp validation
-              }}/>
-          }
+          <div>
+          <Labels value='Email :'/>
+          <InputSection type='email'
+            value={email}
+            placeholder='Your Email'
+            onChange={setEmail}
+          />
+          </div>
 
-          {isPhoneNumberIsValid && // only show if phone number is valid
-            //aadhar validation component
-            <AadharValidation 
-              validStatus={isAadharIsValid}
-              setValidStatus={(status, aadharNumberValue)=> {
-                setIsAadharIsValid(status);
-                if(status && aadharNumberValue) setAadharNumber(aadharNumberValue);
-              }}
-            />
-          }
-          {isAadharIsValid &&
-            <PanCardValidation
-            validStatus={isPanIsValid}
-            setValidStatus={(status, panNumberValue)=> {
-              setIsPanIsValid(status);
-              if(status && panNumberValue) setPanNumber(panNumberValue);
-            }}
-            />
 
-          }
+          <div>
+          <Labels value='Phone number :'/>
+          <InputSection type='number'
+            value={phoneNumber}
+            placeholder='Your Number'
+            onChange={setPhoneNumber}
+          />
+          </div>
+
+          <div>
+          <Labels value='Date of birth'/>
+          <InputSection type='date'
+            value={DateFormatter(dateOfBirth)}
+            placeholder='dd-mm-yyyy'
+            onChange={handleDateChange}
+          />
+          </div>
+          <p>{errorMessage}</p>
+
+          <CustomizableButton value='Register User'
+            onClickFunction={()=>RegisterUser(name,email,phoneNumber,dateOfBirth,setErrorMessage)} />
+
+          
+          
 
         </div>
       </div>

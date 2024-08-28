@@ -16,11 +16,11 @@ export const sendOtpForEmailValidation = async (
 ) => {
     try {
         if (email && emailRegex.test(email)) {
-            // await axios.post('http://localhost:3400/api/auth/sendOtpToEmail', { email });
+            axios.post('http://localhost:3400/api/auth/sendOtpToEmail', { email });
             setOtpButtonClicks(otpButtonClicks + 1);
             setShowOtpSection(true); // Show OTP section
             resetTimer(); // Start and reset the countdown timer
-            setErrorMessage('');
+            setErrorMessage('OTP emailed to your mail');
         } else {
             setErrorMessage('Please Enter a valid email');
         }

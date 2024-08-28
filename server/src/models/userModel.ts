@@ -1,118 +1,76 @@
 import { Schema, model } from 'mongoose';
 
-// Custom validator function
-const requiredOrNull = (value: any) => {
-  return value === null || value !== undefined && value !== '';
-};
-
-// Define the schema with custom validators
+// Define the simplified schema
 const UserSchema = new Schema({
     name: { 
-        type: String, 
-        validate: [requiredOrNull, 'Name is required'], 
-        default: null 
+        type: String 
     },
     email: { 
         type: String, 
-        unique: true, 
-        validate: [requiredOrNull, 'Email is required'], 
-        default: null 
+        unique: true
     },
     emailValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'Email validation date is required'], 
-        default: null 
+        type: Date 
     },
     phoneNumber: { 
         type: String, 
-        unique: true, 
-        validate: [requiredOrNull, 'Phone number is required'], 
-        default: null 
+        unique: true 
     },
     phoneNumberValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'Phone number validation date is required'], 
-        default: null 
+        type: Date 
     },
     aadharNumber: { 
-        type: String, 
-        unique: true, 
-        validate: [requiredOrNull, 'Aadhar number is required'], 
-        default: null 
+        type: String
     },
     aadharValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'Aadhar validation date is required'], 
-        default: null 
+        type: Date 
     },
     panNumber: { 
-        type: String, 
-        unique: true, 
-        validate: [requiredOrNull, 'PAN number is required'], 
-        default: null 
+        type: String,
+        unique: true 
     },
     panValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'PAN validation date is required'], 
-        default: null 
+        type: Date
     },
     bankAccountNumber: { 
         type: String, 
-        unique: true, 
-        validate: [requiredOrNull, 'Bank account number is required'], 
-        default: null 
+        unique: true
     },
     bankAccountValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'Bank account validation date is required'], 
-        default: null 
+        type: Date
     },
     gstNumber: { 
-        type: String, 
-        unique: true, 
-        validate: [requiredOrNull, 'GST number is required'], 
-        default: null 
+        type: String,
+        unique: true 
     },
     gstValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'GST validation date is required'], 
-        default: null 
+        type: Date
     },
     pinCode: { 
-        type: String, 
-        validate: [requiredOrNull, 'Pin code is required'], 
-        default: null 
+        type: String
     },
     pinCodeValidatedAt: { 
-        type: Date, 
-        validate: [requiredOrNull, 'Pin code validation date is required'], 
-        default: null 
+        type: Date 
     },
     city: { 
-        type: String, 
-        validate: [requiredOrNull, 'City is required'], 
-        default: null 
+        type: String
     },
     district: { 
-        type: String, 
-        validate: [requiredOrNull, 'District is required'], 
-        default: null 
+        type: String 
     },
     state: { 
-        type: String, 
-        validate: [requiredOrNull, 'State is required'], 
-        default: null 
+        type: String 
     },
     dateOfBirth: { 
-        type: Date, 
-        validate: [requiredOrNull, 'Date of birth is required'], 
-        default: null 
+        type: Date
     },
     password: { 
-        type: String, 
-        validate: [requiredOrNull, 'Password is required'], 
-        default: null 
+        type: String
+    },
+    UserRegisteredAt:{
+        type: Date
     },
 });
 
+// Create the model using the simplified schema
 export default model('User', UserSchema);

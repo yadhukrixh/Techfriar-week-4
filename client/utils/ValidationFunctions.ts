@@ -1,19 +1,21 @@
+import axios from "axios";
 
 // validate otp function for the email
-export const validateOtpForEmail = (
+export const validateOtpForEmail = async(
     otp: string,
-    setValidStatus: (status: boolean, email?: string) => void,
-    email: string,
-    setIsEditable: (editable: boolean) => void,
-    setShowOtpSection: (show: boolean) => void
+    userID:string,
+    setValidStatus: (status: boolean) => void,
+    setErrorMessage: (message:string) => void
 ) => {
-    if (otp === '123456') {
-        setValidStatus(true, email);
-        setIsEditable(true);
-        setShowOtpSection(false);
-    } else {
-        alert('Invalid OTP');
-        setValidStatus(false);
+    if (!otp) {
+        setErrorMessage('Field can not be empty!')
+    }
+    try{
+        await axios.post("http://localhost:3400/api/auth/validateEmailOtp", { otp , userID });
+        
+        setValidStatus(true);
+    }catch(error){
+
     }
 };
 

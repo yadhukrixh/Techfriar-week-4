@@ -1,13 +1,14 @@
+
 import { sendOtpEmailService } from "../services/emailServices";
-import { generateOtp } from "./generateOtp"
 
-
-
-export const SendOtpToEmail = async (email:string) => {
-    const otp = generateOtp();
+export const otpSessions: { [key: string]: string } = {};
+export const SendOtpToEmail = async (otp:string,email:string) => {
+    
     try{
         await sendOtpEmailService(email,otp);
         console.log("OTP successfully sent")
+        console.log();
+        
     }catch(error){
         console.error(error,"OTP sending failed");
         

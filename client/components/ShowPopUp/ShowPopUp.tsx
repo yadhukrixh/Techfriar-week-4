@@ -19,7 +19,7 @@ const ShowPopUpComponent:FC<ShowPopUpProps> = ({valueType , value ,setShowPopUp}
       <div className={styles.popupOverlay}>
       <div className={styles.popupContainer}>
         <h2 className={styles.popHeading}>{valueType} verification </h2>
-        <p className={styles.popDescription}>Your Email:<span>{value}</span> is verified. Continue to redirect to Phone Number validation.</p>
+        <p className={styles.popDescription}>Your {valueType}:<span>{value}</span> is verified. Continue to redirect to Phone Number validation.</p>
         <div className={styles.buttonGroup}>
           <button onClick={onContinue} className={styles.proceedButton}>
             Continue

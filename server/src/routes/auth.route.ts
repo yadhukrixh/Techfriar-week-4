@@ -1,6 +1,6 @@
 // call various routing functions
 import express from "express";
-import { registerUser, sendOtp, UpdateUserData, validateOtp } from "../controllers/auth.controllers";
+import { registerUser, sendOtp, UpdateUserData, validateAadhaar, validateOtp } from "../controllers/auth.controllers";
 import session from "express-session";
 
 
@@ -13,6 +13,8 @@ router.post("/UpdateUserData",UpdateUserData);
 router.post("/SendOtp",sendOtp);
 
 router.post("/validateOtp",validateOtp);
+
+router.post("/validateAadhaar",validateAadhaar);
 
 
 

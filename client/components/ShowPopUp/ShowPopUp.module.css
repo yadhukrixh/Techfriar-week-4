@@ -31,12 +31,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #309d65;
+    color: #023741;
+    font-size: 12px;
+    font-weight: 600;
   }
 
   .popDescription span{
     color: #000000;
-    font-size: 12px;
+    font-size: 15px;
     font-weight: 800;
 
   }

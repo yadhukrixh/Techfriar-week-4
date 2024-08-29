@@ -5,6 +5,8 @@ import { SessionData } from '../../types/express-session';
 import mongoose from 'mongoose';
 import { sendOtpEmailService } from '../services/emailServices';
 import { sendOtpToPhoneNumberService } from '../services/phoneServices';
+import { aadhaarApi } from '../services/aadhaarServices';
+import { panApi } from '../services/panServices';
 
 const sessionStore: { [key: string]: SessionData } = {};
 
@@ -184,5 +186,53 @@ export const validateOtp = async (req: Request, res: Response) => {
 
     }
 };
+
+export const validateAadhaar = async(req:Request,res:Response)=>{
+    const {userId,aadhaarNumber} = req.body;
+    const objectId = new mongoose.Types.ObjectId(userId);
+    try{
+        let user = await User.findOne({  _id: objectId });
+        if(user?.aadharNumber === aadhaarNumber){
+            res.json({ message: 'Aadhaar is already exist'});
+        }
+        else{
+            const response = await aadhaarApi(aadhaarNumber);
+            if(response){
+                await User.updateOne(
+                    { _id: objectId },
+                    { 
+                    $set: {
+                        aadharNumber: aadhaarNumber,
+                        aadharValidatedAt: new Date(),
+                    }
+                    }
+                );
+                res.json({message:"Aadhaar validated",isValid:true});
+            }else{
+                res.json({message:"Enter a valid aadhaar",isValid:false});
+            } 
+        }
+    }catch(error)
+    {
+        res.status(404).json({message:error,isValid:false});
+    }
+}
+
+export const validatePan = async(req:Request,res:Response) => {
+    const{userId , panNumber} = req.body;
+    const objectId = new mongoose.Types.ObjectId(userId);
+    try{
+        let user = await User.findOne({_id: objectId});
+        if(user?.panNumber === panNumber){
+            res.json({ message: 'Pan is already exist'});
+        }
+        else{
+            const response = await panApi(panNumber);
+            console.log(response)
+        }
+    }catch(error){
+        
+    }
+}
 
 

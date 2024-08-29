@@ -1,4 +1,5 @@
 import axios from "axios";
+import { aadharRegex } from "./RegexFunctions";
 
 // validate otp function for the email
 export const validateOtpForEmail = async(
@@ -60,23 +61,27 @@ export const validateOtpForPhoneNumber = async (
 
 
 
-// Validate otp function for aadhar
-// export const validateOtpForAadhar = (
-//     otp: string,
-//     setValidStatus: (status: boolean, aadharNumber?: string) => void,
-//     aadharNumber: string,
-//     setIsEditable: (editable: boolean) => void,
-//     setShowOtpSection: (show: boolean) => void
-// ) => {
-//     if (otp === '123456') {
-//         setValidStatus(true, aadharNumber);
-//         setIsEditable(true);
-//         setShowOtpSection(false);
-//     } else {
-//         alert('Invalid OTP');
-//         setValidStatus(false);
-//     }
-// };
+export const validateAadhaar =  async (
+    userId:string,
+    aadhaarNumber: string,
+    setValidStatus: (status: boolean, aadharNumber?: string) => void,
+    setShowPopUp: (show: boolean) => void,
+    setErrorMessage:(message:string) => void
+) => {
+    if (!aadhaarNumber || !aadharRegex.test(aadhaarNumber)){
+        setErrorMessage("Enter a Valid Aadhaar Number");
+    } 
+    try{
+        const response = await axios.post("http://localhost:3400/api/auth/validateAadhaar",{ userId , aadhaarNumber})
+        if(response.data.isValid){
+            setValidStatus(true);
+            setShowPopUp(true);
+        }
+        setErrorMessage(response.data.message)
+    }catch(error){
+
+    }
+};
 
 
 

@@ -3,13 +3,14 @@
     border: none;
     width: 300px;
     background-color: transparent;
-    border: 3px solid rgb(219, 43, 43) !important;
-    border-radius: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom: 1px solid black;
     padding: 8px;
     background-color: #fff;
     padding-bottom: 1px;
     font-weight: 500;
-
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px, rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
 }
 
 .inputSectionMainClass input::-webkit-outer-spin-button,
@@ -23,7 +24,7 @@
 }
 
 .inputSectionMainClass input:read-only{
-  border-color: #7ed485 !important;
+  border-color: #00ff15 !important;
   color: #000;
 }
 

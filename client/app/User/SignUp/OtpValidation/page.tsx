@@ -29,7 +29,7 @@ const page: React.FC = () => {
     if(isEmailIsValid && isPhoneNumberIsValid && !ShowPopUp){
       router.push(`/User/SignUp/KYCValidation?${queryParams}`);
     }
-  },[])
+  },[isEmailIsValid,isPhoneNumberIsValid,ShowPopUp,router])
 
   return (
     <div className={styles.main}>

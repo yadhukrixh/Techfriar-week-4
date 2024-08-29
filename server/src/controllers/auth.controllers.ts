@@ -1,14 +1,19 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
-import { SendOtpToEmail } from '../utils/sendOtp';
 import { generateOtp } from '../utils/generateOtp';
 import { SessionData } from '../../types/express-session';
 import mongoose from 'mongoose';
 import { sendOtpEmailService } from '../services/emailServices';
+import { sendOtpToPhoneNumberService } from '../services/phoneServices';
+
+const sessionStore: { [key: string]: SessionData } = {};
+
+let globalSessionID: string;
+
 
 export const registerUser = async (req: Request, res: Response) => {
-    const { name, email, phoneNumber, dateOfBirth } = req.body;
-    console.log(name, email, phoneNumber, dateOfBirth);
+    const { name, email, phoneNumber, dateOfBirth, password } = req.body;
+    console.log(name,email,phoneNumber,dateOfBirth,password);
 
     if (!email) {
         return res.json({ message: 'Email is required' });
@@ -33,7 +38,8 @@ export const registerUser = async (req: Request, res: Response) => {
             email: email,
             phoneNumber: phoneNumber,
             dateOfBirth: dateOfBirth,
-            UserRegisteredAt: Date.now()
+            UserRegisteredAt: Date.now(),
+            password:password
         });
 
         // Save the new user to the database
@@ -56,8 +62,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const UpdateUserData = async (req:Request, res:Response) =>{
     const { updatedValue, userID, propertyModelName } = req.body;
-    console.log("updation function")
-    console.log(userID);
+    
 
     try {
         // Find the user by userID
@@ -76,7 +81,7 @@ export const UpdateUserData = async (req:Request, res:Response) =>{
             // Save the updated user document
             await user.save();
 
-            res.status(200).json({ message: 'User updated successfully', user });
+            res.status(200).json({ message: 'User updated successfully', user, propertyValue:updatedValue });
         } else {
             res.status(400).json({ message: `Property ${propertyModelName} does not exist on the user model` });
         }
@@ -88,19 +93,28 @@ export const UpdateUserData = async (req:Request, res:Response) =>{
 
 
 // Send otp to email function
-export const sendOtpToEmail = async (req:Request,res:Response) => {
-    const { email } = req.body;
+export const sendOtp = async (req:Request,res:Response) => {
+    const { field,value } = req.body;
     const otp = generateOtp()
-    if(!email){
-        return res.json({message:'email is required'});
+    if(!value){
+        return res.json({message:`${field} is required`});
     }
     try{
         // Store OTP, email, and user ID in the session
-        (req.session as SessionData).email = email;
+        (req.session as SessionData).field = field;
+        (req.session as SessionData).value = value;
         (req.session as SessionData).otp = otp;
-        console.log(req.session)
+        globalSessionID = req.sessionID;
 
-        await sendOtpEmailService(email,otp);
+        sessionStore[req.sessionID] = req.session as SessionData;
+
+        if(field === 'email'){
+            await sendOtpEmailService(value,otp);
+        }
+        else{
+            const updatedValue = `+91${value}`
+            await sendOtpToPhoneNumberService(updatedValue,otp);
+        }
         
     }catch(error){
 
@@ -111,23 +125,60 @@ export const sendOtpToEmail = async (req:Request,res:Response) => {
 
 
 
-export const validateOtpForEmail = async (req: Request, res: Response) => {
+export const validateOtp = async (req: Request, res: Response) => {
     const { otp , userID } = req.body;
 
     const objectId = new mongoose.Types.ObjectId(userID);
+    const session =await sessionStore[globalSessionID];
+    
+
     try{
         let user = await User.findOne({  _id: objectId });
-        const email = user?.email;
-        const session = req.session as SessionData;
-        console.log(email);
+          // Log session data
+
         if(!user){
             return res.status(404);
         }
 
-        if(user.email === (req.session as SessionData).email && (req.session as SessionData).otp === otp){
-            res.json({message:'Email Validated', isEmailValid:true});
-            (req.session as SessionData).email = '';
-            (req.session as SessionData).otp = '';
+        let data: string | undefined;
+
+        if(session.field === 'email'){
+            data = user.email?.toString();
+        }
+        else if(session.field === 'phoneNumber'){
+            data = user.phoneNumber?.toString();
+        }
+
+
+        if (data === session.value && session.otp === otp) {
+            // OTP is valid
+            if(session.field === "email"){
+                await User.updateOne(
+                    { _id: objectId },
+                    { 
+                      $set: {
+                        emailValidatedAt: new Date(),
+                      }
+                })
+                return res.status(200).json({ message: 'Email validated successfully', isValid: true,phoneNumber:user.phoneNumber });
+            }else{
+                await User.updateOne(
+                    { _id: objectId },
+                    { 
+                      $set: {
+                        phoneNumberValidatedAt: new Date(),
+                      }
+                }) 
+                return res.status(200).json({ message: 'Email validated successfully', isValid: true});
+            }
+
+            session.field = '';
+            session.otp = '';
+            session.value = '';
+              
+        } else {
+            // OTP is invalid
+            return res.status(400).json({ message: 'Invalid OTP or email', isValid: false });
         }
     }catch(error){
 

@@ -16,7 +16,7 @@ export const sendOtpForEmailValidation = async (
 ) => {
     try {
         if (email && emailRegex.test(email)) {
-            axios.post('http://localhost:3400/api/auth/sendOtpToEmail', { email });
+            axios.post('http://localhost:3400/api/auth/sendOtp', {field:'email',value:email });
             setOtpButtonClicks(otpButtonClicks + 1);
             setShowOtpSection(true); // Show OTP section
             resetTimer(); // Start and reset the countdown timer
@@ -43,13 +43,20 @@ export const sendOtpForPhoneNumberValidation = (
     setErrorMessage: (message: string) => void,
     setShowOtpSection: (show: boolean) => void
 ) => {
-    if (phoneNumber && phoneNumberRegex.test(phoneNumber)) {
-        setOtpButtonClicks(otpButtonClicks + 1);
-        setShowOtpSection(true); // Show OTP section
-        resetTimer(); // Start and reset the countdown timer
-        setErrorMessage('');
-    } else {
-        setErrorMessage('Please Enter a valid Phone Number');
+    try {
+        if (phoneNumber && phoneNumberRegex.test(phoneNumber)) {
+            axios.post('http://localhost:3400/api/auth/sendOtp', {field:'phoneNumber',value:phoneNumber });
+            setOtpButtonClicks(otpButtonClicks + 1);
+            setShowOtpSection(true); // Show OTP section
+            resetTimer(); // Start and reset the countdown timer
+            setErrorMessage('OTP texted to yor phone number');
+        } else {
+            setErrorMessage('Please Enter a valid Phone number');
+        }
+    } catch (error: any) {
+        console.error("Error on frontend:", error);
+        // You can extract and set a more specific error message based on the response
+        setErrorMessage(error?.response?.data?.error || 'Failed to send OTP. Please try again.');
     }
 };
 

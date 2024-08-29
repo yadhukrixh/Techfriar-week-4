@@ -19,7 +19,10 @@ app.use(
     resave: false, // Avoid resaving session if unmodified
     saveUninitialized: true, // Save uninitialized sessions
     cookie: {
-      maxAge: 60000, // Session cookie expiration time in milliseconds
+      maxAge: 60000, // Session expiry time in milliseconds
+      secure: false, // Set to true if using HTTPS
+      httpOnly: true,
+      sameSite: 'lax' // 'strict' or 'none' as needed
     },
   })
 );

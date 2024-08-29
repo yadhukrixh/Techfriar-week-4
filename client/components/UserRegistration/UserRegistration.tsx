@@ -10,6 +10,7 @@ import { DateFormatter } from '@/utils/DateFormatter';
 import { useRouter } from 'next/navigation';
 
 
+
 const UserRegistration = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState(''); // State to store the email value
@@ -20,6 +21,13 @@ const UserRegistration = () => {
   const [numberErrorMessage, setNumberErrorMessage] = useState('')
   const [isRegistered, setIsRegistered] = useState(false);
   const [userId ,setUserId] = useState('');
+  const [password,setPassword] = useState('');
+  const [passwordErrorMessage,setPasswordErrorMessage] = useState('');
+
+  
+
+
+  
 
 
   const router = useRouter();
@@ -104,10 +112,21 @@ const UserRegistration = () => {
           </div>
           <p>{errorMessage}</p>
 
+          <div>
+            <Labels value='Password :' />
+            <InputSection
+              type='password'
+              value={password}
+              placeholder='Your Password'
+              onChange={setPassword}
+            />
+            <p>{passwordErrorMessage}</p>
+          </div>
+
           {/* Button to register user */}
           <CustomizableButton
             value='Register User'
-            onClickFunction={() => RegisterUser(name, email, phoneNumber, dateOfBirth, setErrorMessage, setIsRegistered, setEmailErrorMessage,setNumberErrorMessage,setUserId )}
+            onClickFunction={() => RegisterUser(name, email, phoneNumber, dateOfBirth,password, setErrorMessage, setIsRegistered, setEmailErrorMessage,setNumberErrorMessage,setUserId,setPasswordErrorMessage )}
           />
         </div>
       </div>

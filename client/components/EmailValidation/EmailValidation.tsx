@@ -1,78 +1,128 @@
 "use client";
 
-import React, { FC, useState, useEffect } from 'react';
-import styles from './EmailValidation.module.css';
-import Labels from '../ReUsableComponents/Labels/Labels';
-import InputSection from '../ReUsableComponents/InputSection/InputSection';
-import CustomizableButton from '../ReUsableComponents/CustomizableButton/CustomizableButton';
-import { useCountdownTimer , formatTime } from '@/utils/TimeSetter';
-import { sendOtpForEmailValidation } from '@/utils/SendOtpFunctions';
-import { validateOtpForEmail } from '@/utils/ValidationFunctions';
-
-
+import React, { FC, useState, useEffect } from "react";
+import styles from "./EmailValidation.module.css";
+import Labels from "../ReUsableComponents/Labels/Labels";
+import InputSection from "../ReUsableComponents/InputSection/InputSection";
+import CustomizableButton from "../ReUsableComponents/CustomizableButton/CustomizableButton";
+import { useCountdownTimer, formatTime } from "@/utils/TimeSetter";
+import { sendOtpForEmailValidation } from "@/utils/SendOtpFunctions";
+import { validateOtpForEmail } from "@/utils/ValidationFunctions";
+import { saveProperty } from "@/utils/ValuesUpdator";
 
 interface EmailValidationProps {
-  validStatus: boolean;
-  setValidStatus: (status: boolean, email?: string) => void;
+  email:string;
+  setEmail:(message:string) => void,
+  userId:string;
+  setValidStatus: (status: boolean) => void;
+  setShowPopUp:(status:boolean) => void;
+  setPhoneNumber:(message:string) => void;
 }
 
-const EmailValidation: FC<EmailValidationProps> = ({ validStatus, setValidStatus}) => {
-  const [email, setEmail] = useState(''); // State to manage email input
-  const [otp, setOtp] = useState(''); // State to manage OTP input
-  const [errorMessage, setErrorMessage] = useState(''); // Manages error or validation messages
-  const [otpButtonClicks, setOtpButtonClicks] = useState(0); // Counts the number of times the OTP button is clicked
-  const [timeLeft, isButtonDisabled, resetTimer] = useCountdownTimer(30); // Use the countdown timer hook
+const EmailValidation: FC<EmailValidationProps> = ({
+  email,
+  setEmail,
+  userId,
+  setValidStatus,
+  setShowPopUp,
+  setPhoneNumber
+}) => {
 
 
-  const [isEditable, setIsEditable] = useState(false); // Controls whether the email input is editable
-  const [showOtpSection, setShowOtpSection] = useState(false); // Controls the visibility of the OTP section
-  
-  
+  const [otp, setOtp] = useState("");
+  const [otpButtonClicks, setOtpButtonClicks] = useState(0); // Counts the number of times the OTP button is clicked 
+  const [timeLeft, isButtonDisabled, resetTimer] = useCountdownTimer(30); // Use the countdown timer hook // component variable
+  const [errorMessage, setErrorMessage] = useState("");// component variable
+  const [isReadOnly, setIsReadOnly] = useState(true);//component variable
+  const [otpSentStatus, setOtpSentStatus] = useState(false);//component varibale
+
+  //function to set editable or not
+  const editProperty = () => {
+    setIsReadOnly(false);
+  }
+
 
   return (
-    <div className={styles.mainClass}>
-      <div>
-        {/* Label and Input for Email */}
-        <Labels value="Email :" />
-        <InputSection
-          type="email"
-          value={email}
-          placeholder="Email"
-          onChange={setEmail}
-          editableStatus={isEditable}
-        />
-
-        {/* OTP Button: Show the button with a timer and disabled state */}
-        {!validStatus &&
-        <CustomizableButton
-          value={
-            otpButtonClicks > 0
-            ? isButtonDisabled
-              ? formatTime(timeLeft)
-              : 'Resend'
-              : 'Send OTP'
-          }
-          onClickFunction={() => sendOtpForEmailValidation(email, otpButtonClicks, setOtpButtonClicks, resetTimer, setErrorMessage, setShowOtpSection)}
-          disabled={isButtonDisabled}
-        />}
-      </div>
-
-      {/* Display Error Message */}
-      <p>{errorMessage}</p>
-
-      {/* OTP Section: Show only if showOtpSection is true */}
-      {showOtpSection && isButtonDisabled &&
+    <div className={styles.main}>
+      <div className={styles.userForm}>
         <div>
-          <Labels value="OTP :" />
+          <Labels value="Email :" />
           <InputSection
-            type="number"
-            value={otp}
-            placeholder="Enter OTP"
-            onChange={setOtp}
+            type="email"
+            value={email}
+            placeholder="Enter your Email"
+            onChange={setEmail}
+            editableStatus={isReadOnly}
           />
-          <CustomizableButton value="Validate" onClickFunction={() => validateOtpForEmail(otp, setValidStatus, email, setIsEditable, setShowOtpSection)} />
+          <p>{errorMessage}</p>
+          {isReadOnly && (
+            <div>
+              <CustomizableButton value="Edit" onClickFunction={editProperty} />
+              <CustomizableButton
+                value={
+                  otpButtonClicks > 0
+                    ? isButtonDisabled
+                      ? formatTime(timeLeft)
+                      : "Resend"
+                    : "Send OTP"
+                }
+                onClickFunction={() =>
+                  sendOtpForEmailValidation(
+                    email,
+                    otpButtonClicks,
+                    setOtpButtonClicks,
+                    resetTimer,
+                    setErrorMessage,
+                    setOtpSentStatus
+                  )
+                }
+                disabled={isButtonDisabled}
+              />
+            </div>
+          )}
+          {!isReadOnly && (
+            <CustomizableButton
+              value="Save"
+              onClickFunction={() =>
+                saveProperty(
+                  email,
+                  userId,
+                  'email',
+                  setIsReadOnly,
+                  setEmail
+                )
+              }
+            />
+          )}
+
+          {isReadOnly && otpSentStatus && (
+            <div>
+              <Labels value="OTP:" />
+              <InputSection
+                type="number"
+                value={otp}
+                placeholder="Enter your otp"
+                onChange={setOtp}
+                editableStatus={false}
+              />
+              <CustomizableButton
+                value="validate OTP"
+                onClickFunction={() =>
+                  validateOtpForEmail(
+                    otp,
+                    userId,
+                    setValidStatus,
+                    setErrorMessage,
+                    setShowPopUp,
+                    setPhoneNumber
+                  )
+                }
+                disabled={false}
+              />
+            </div>
+          )}
         </div>
-      }
+      </div>
     </div>
   );
 };

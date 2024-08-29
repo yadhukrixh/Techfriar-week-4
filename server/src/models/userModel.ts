@@ -3,72 +3,94 @@ import { Schema, model } from 'mongoose';
 // Define the simplified schema
 const UserSchema = new Schema({
     name: { 
-        type: String 
+        type: String,
+        default:null
     },
     email: { 
         type: String, 
-        unique: true
+        unique: true,
+        default:null
     },
     emailValidatedAt: { 
-        type: Date 
+        type: Date,
+        default:null
     },
     phoneNumber: { 
         type: String, 
-        unique: true 
+        unique: true ,
+        default:null
     },
     phoneNumberValidatedAt: { 
-        type: Date 
+        type: Date,
+        default:null
     },
     aadharNumber: { 
-        type: String
+        type: String,
+        default:null
     },
     aadharValidatedAt: { 
-        type: Date 
+        type: Date,
+        default:null
     },
     panNumber: { 
         type: String,
-        unique: true 
+        default:null
     },
     panValidatedAt: { 
-        type: Date
+        type: Date,
+        default:null
     },
     bankAccountNumber: { 
-        type: String, 
-        unique: true
+        type: String,
+        default:null
     },
     bankAccountValidatedAt: { 
-        type: Date
+        type: Date,
+        default:null
+    },
+    ifscCode: {
+        type:String,
+        default:null
     },
     gstNumber: { 
         type: String,
-        unique: true 
+        default:null
     },
     gstValidatedAt: { 
-        type: Date
+        type: Date,
+        default:null
     },
     pinCode: { 
-        type: String
+        type: String,
+        default:null
     },
     pinCodeValidatedAt: { 
-        type: Date 
+        type: Date,
+        default:null
     },
     city: { 
-        type: String
+        type: String,
+        default:null
     },
     district: { 
-        type: String 
+        type: String,
+        default:null
     },
     state: { 
-        type: String 
+        type: String,
+        default:null
     },
     dateOfBirth: { 
-        type: Date
+        type: Date,
+        default:null
     },
     password: { 
-        type: String
+        type: String,
+        default:null
     },
     UserRegisteredAt:{
-        type: Date
+        type: Date,
+        default:null
     },
 });
 

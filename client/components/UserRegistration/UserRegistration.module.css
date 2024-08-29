@@ -31,8 +31,9 @@
 }
 
 .userForm div p{
-    width: 100%;
+    max-width: 300px;
     display: flex;
+    text-align: center;
     justify-content: center;
     font-size: 10px;
     color:red

@@ -3,9 +3,8 @@ import { Session } from "express-session";
 
 
 export interface SessionData extends Session {
-    [key: string]: any;
-    email:string;
+    field:string;
+    value:string;
     otp:string;
-    userId:string;
 }
 

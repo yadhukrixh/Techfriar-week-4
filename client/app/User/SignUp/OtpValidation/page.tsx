@@ -1,103 +1,75 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import styles from "./OtpValidation.module.css";
-import Labels from "@/components/ReUsableComponents/Labels/Labels";
-import { useSearchParams } from "next/navigation"; // to acess the params
-import InputSection from "@/components/ReUsableComponents/InputSection/InputSection";
-import CustomizableButton from "@/components/ReUsableComponents/CustomizableButton/CustomizableButton";
-import { formatTime, useCountdownTimer } from "@/utils/TimeSetter";
-import { sendOtpForEmailValidation } from "@/utils/SendOtpFunctions";
-import { saveProperty } from "@/utils/ValuesUpdator";
-import { validateOtpForEmail } from "@/utils/ValidationFunctions";
-
+import { useRouter, useSearchParams } from "next/navigation"; // to acess the params
+import EmailValidation from "@/components/EmailValidation/EmailValidation";
+import ShowPopUpComponent from "@/components/ShowPopUp/ShowPopUp";
+import PhoneNumberValidation from "@/components/PhoneNumberValidation/PhoneNumberValidation";
 
 const page: React.FC = () => {
-  const router = useRouter();
-  const [otp, setOtp] = useState("");
   const searchParams = useSearchParams();
-  const [otpButtonClicks, setOtpButtonClicks] = useState(0); // Counts the number of times the OTP button is clicked
-  const [timeLeft, isButtonDisabled, resetTimer] = useCountdownTimer(30); // Use the countdown timer hook
-  const [errorMessage,setErrorMessage] = useState('');
-  const [isPropertyIsValid,setIsPropertyIsValid] = useState(false);
-
-  
-  const [userId,setUserId] = useState(
-    searchParams.get("userId") || ""
+  const [email, setEmail] = useState(searchParams.get("propertyValue") || "");
+  const [isEmailIsValid, setIsEmailIsValid] = useState(false);
+  const [isPhoneNumberIsValid, setIsPhoneNumberIsValid] = useState(false);
+  const [ShowPopUp, setShowPopUp] = useState(false);
+  const [userId, setUserId] = useState(searchParams.get("userId") || "");
+  const [propertyModelName, setPropertyModelName] = useState(
+    searchParams.get("propertyModelName") || ""
   );
-
-  const [propertyModelName,setPropertyModelName] = useState(
-    searchParams.get('propertyModelName') || ""
-  );
-
-  const [propertyValue, setPropertyValue] = useState(
-    searchParams.get("propertyValue") || ""
-  );
+  const [phoneNumber, setPhoneNumber] = useState("");
 
 
+  const router = useRouter();
+  const queryParams = new URLSearchParams({
+    userId : userId
+  });
 
-  const [isReadOnly, setIsReadOnly] = useState(true);
-  const [otpSentStatus , setOtpSentStatus] = useState(false);
-
-  const editProperty= () => {
-    setIsReadOnly(false);
-  }
-
-
-
-  
+  useEffect(()=>{
+    if(isEmailIsValid && isPhoneNumberIsValid && !ShowPopUp){
+      router.push(`/User/SignUp/KYCValidation?${queryParams}`);
+    }
+  },[])
 
   return (
     <div className={styles.main}>
       <div className={styles.userForm}>
-        <div>
-          <Labels value={searchParams.get("propertyLabel") || ""} />
-          <InputSection
-            type={searchParams.get("type") || "email"}
-            value={propertyValue}
-            placeholder={searchParams.get("placeholder") || ""}
-            onChange={setPropertyValue}
-            editableStatus={isReadOnly}
+        {!isEmailIsValid && (
+          <EmailValidation
+            email={email}
+            setEmail={setEmail}
+            userId={userId}
+            setValidStatus={setIsEmailIsValid}
+            setShowPopUp={setShowPopUp}
+            setPhoneNumber={setPhoneNumber}
           />
-          <p>{errorMessage}</p>
-          {isReadOnly && (
-            <div>
-                <CustomizableButton value="Edit" onClickFunction={editProperty} />
-                <CustomizableButton
-                    value={
-                        otpButtonClicks > 0
-                        ? isButtonDisabled
-                        ? formatTime(timeLeft)
-                        : 'Resend'
-                        : 'Send OTP'
-                    }
-                    onClickFunction={() => sendOtpForEmailValidation(propertyValue, otpButtonClicks, setOtpButtonClicks, resetTimer, setErrorMessage, setOtpSentStatus)}
-                    disabled={isButtonDisabled}
-                />
-            </div>
-          )}
-          {!isReadOnly && (
-            <CustomizableButton value="Save" onClickFunction={() => saveProperty(propertyValue,userId,propertyModelName,setIsReadOnly)} />
-          )}
-        
-          {isReadOnly && otpSentStatus &&
-            <div>
-                <Labels value="OTP:" />
-                <InputSection
-                    type='number'
-                    value={otp}
-                    placeholder="Enter your otp"
-                    onChange={setOtp}
-                    editableStatus = {false}
-                />
-                <CustomizableButton value="validate OTP" onClickFunction={()=> validateOtpForEmail(otp,userId,setIsPropertyIsValid,setErrorMessage)}  disabled={false}/>
-            </div>
-          }
-        
-
-        </div>
+        )}
+        {isEmailIsValid && (
+          <PhoneNumberValidation
+            phoneNumber={phoneNumber}
+            setPhoneNumber={setPhoneNumber}
+            userId={userId}
+            setValidStatus={setIsPhoneNumberIsValid}
+            setShowPopUp={setShowPopUp}
+          />
+        )}
       </div>
+
+      {ShowPopUp && isEmailIsValid && (
+        <ShowPopUpComponent
+          valueType="Email"
+          value={email}
+          setShowPopUp={setShowPopUp}
+        />
+      )}
+
+      {isEmailIsValid && isPhoneNumberIsValid && ShowPopUp && (
+        <ShowPopUpComponent
+          valueType="Phone Number"
+          value={phoneNumber}
+          setShowPopUp={setShowPopUp}
+        />
+      )}
     </div>
   );
 };

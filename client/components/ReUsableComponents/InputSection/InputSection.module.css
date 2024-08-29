@@ -3,9 +3,10 @@
     border: none;
     width: 300px;
     background-color: transparent;
-    border-bottom: 2px solid black !important;
+    border: 3px solid rgb(219, 43, 43) !important;
+    border-radius: 10px;
     padding: 8px;
-    background-color: #a0b0ceab;
+    background-color: #fff;
     padding-bottom: 1px;
     font-weight: 500;
 
@@ -22,7 +23,7 @@
 }
 
 .inputSectionMainClass input:read-only{
-  background-color: #7ed485;
-  color: #fff;
+  border-color: #7ed485 !important;
+  color: #000;
 }
 

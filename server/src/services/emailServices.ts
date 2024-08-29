@@ -1,6 +1,11 @@
 import nodemailer from 'nodemailer';
+import twilio from 'twilio';
 import dotenv from 'dotenv';
 dotenv.config();
+
+const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+
+export default client;
 
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
@@ -23,6 +28,8 @@ export const sendOtpEmailService = async (recipientEmail: string, otp: string) =
         console.log('OTP email sent');
     } catch (error) {
         console.error('Error sending OTP email:', error);
-        throw new Error('Failed to send email'); // Ensure you handle or re-throw the error properly
+        throw new Error('Failed to send email');
     }
 };
+
+

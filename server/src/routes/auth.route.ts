@@ -1,15 +1,18 @@
 // call various routing functions
 import express from "express";
-import { registerUser, sendOtpToEmail, UpdateUserData, validateOtpForEmail } from "../controllers/auth.controllers";
+import { registerUser, sendOtp, UpdateUserData, validateOtp } from "../controllers/auth.controllers";
+import session from "express-session";
+
+
 const router = express.Router();
 
 router.post("/registerUser",registerUser);
 
 router.post("/UpdateUserData",UpdateUserData);
 
-router.post("/SendOtpToEmail",sendOtpToEmail);
+router.post("/SendOtp",sendOtp);
 
-router.post("/validateEmailOtp",validateOtpForEmail);
+router.post("/validateOtp",validateOtp);
 
 
 

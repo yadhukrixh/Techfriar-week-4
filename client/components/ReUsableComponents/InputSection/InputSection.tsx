@@ -8,11 +8,17 @@ interface InputSectionProps {
   placeholder?: string;
   className?: string;
   editableStatus?:boolean;
+  toUppercase?:boolean;
 }
 
-const InputSection: FC<InputSectionProps> = ({ type, value, onChange, placeholder, className ,editableStatus}) => {
+const InputSection: FC<InputSectionProps> = ({ type, value, onChange, placeholder, className ,editableStatus,toUppercase}) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
+    if(toUppercase){
+      const upperCaseValue = e.target.value.toUpperCase(); // Convert to uppercase
+      onChange(upperCaseValue);
+    }else{
+      onChange(e.target.value);
+    }
   };
 
   return (

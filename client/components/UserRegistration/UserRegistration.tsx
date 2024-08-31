@@ -12,19 +12,19 @@ import { useRouter } from 'next/navigation';
 
 
 const UserRegistration = () => {
-  const [name, setName] = useState('');
+  const [name, setName] = useState('');// to store name value
   const [email, setEmail] = useState(''); // State to store the email value
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
   const [phoneNumber, setPhoneNumber] = useState(''); // to store phone number
   const [errorMessage, setErrorMessage] = useState(''); // to set various error messages
-  const [emailErrorMessage, setEmailErrorMessage] = useState('');
-  const [numberErrorMessage, setNumberErrorMessage] = useState('')
-  const [isRegistered, setIsRegistered] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');// to store error message
+  const [numberErrorMessage, setNumberErrorMessage] = useState('');// to store error message
+  const [isRegistered, setIsRegistered] = useState(false);//check registered?
   const [userId ,setUserId] = useState('');
   const [password,setPassword] = useState('');
   const [passwordErrorMessage,setPasswordErrorMessage] = useState('');
 
-  
+
 
 
   

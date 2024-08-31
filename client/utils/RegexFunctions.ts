@@ -14,6 +14,13 @@ export const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
 
 export const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
+export const ifscRegex = /^[A-Z]{4}0[A-Z0-9]{6}$/;
+
+
+export const bankRegex = /^\d{9,18}$/;
+
+
+
 
 
 

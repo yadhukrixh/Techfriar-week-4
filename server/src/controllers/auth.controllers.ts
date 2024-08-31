@@ -7,12 +7,13 @@ import { sendOtpEmailService } from '../services/emailServices';
 import { sendOtpToPhoneNumberService } from '../services/phoneServices';
 import { aadhaarApi } from '../services/aadhaarServices';
 import { panApi } from '../services/panServices';
+import { bankAccountValidation, getRequestId} from '../services/bankAccountService';
 
 const sessionStore: { [key: string]: SessionData } = {};
 
 let globalSessionID: string;
 
-
+// register user
 export const registerUser = async (req: Request, res: Response) => {
     const { name, email, phoneNumber, dateOfBirth, password } = req.body;
     console.log(name,email,phoneNumber,dateOfBirth,password);
@@ -61,7 +62,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 
 
-
+// update user data
 export const UpdateUserData = async (req:Request, res:Response) =>{
     const { updatedValue, userID, propertyModelName } = req.body;
     
@@ -94,7 +95,7 @@ export const UpdateUserData = async (req:Request, res:Response) =>{
 }
 
 
-// Send otp to email function
+// Send otp to email / phone number function
 export const sendOtp = async (req:Request,res:Response) => {
     const { field,value } = req.body;
     const otp = generateOtp()
@@ -126,7 +127,7 @@ export const sendOtp = async (req:Request,res:Response) => {
 
 
 
-
+// validate otp of email / phone number
 export const validateOtp = async (req: Request, res: Response) => {
     const { otp , userID } = req.body;
 
@@ -187,6 +188,8 @@ export const validateOtp = async (req: Request, res: Response) => {
     }
 };
 
+
+//validate aadhaar
 export const validateAadhaar = async(req:Request,res:Response)=>{
     const {userId,aadhaarNumber} = req.body;
     const objectId = new mongoose.Types.ObjectId(userId);
@@ -218,6 +221,8 @@ export const validateAadhaar = async(req:Request,res:Response)=>{
     }
 }
 
+
+//validate pan card
 export const validatePan = async(req:Request,res:Response) => {
     const{userId , panNumber} = req.body;
     const objectId = new mongoose.Types.ObjectId(userId);
@@ -228,10 +233,60 @@ export const validatePan = async(req:Request,res:Response) => {
         }
         else{
             const response = await panApi(panNumber);
-            console.log(response)
+            if(response){
+                await User.updateOne(
+                    { _id: objectId },
+                    { 
+                    $set: {
+                        panNumber: panNumber,
+                        panValidatedAt: new Date(),
+                    }
+                    }
+                );
+                res.json({message:"Pan validated",isValid:true});
+            }else{
+                res.json({message:"Enter a valid Pan number",isValid:false});
+            }
         }
     }catch(error){
-        
+        res.status(404).json({message:error,isValid:false});
+    }
+}
+
+
+
+// validate bank account details
+export const validateBankAccount = async (req:Request,res:Response) => {
+    const {userId,accountNumber,ifscCode} = req.body;
+    const objectId = new mongoose.Types.ObjectId(userId);
+    try{
+        let user = await User.findOne({_id: objectId});
+        if(user?.bankAccountNumber === accountNumber){
+            res.json({ message: 'Bank Account is already validated', isValid:false});
+        }
+        else{
+            const requestId:any = await getRequestId(accountNumber,ifscCode);
+
+            const response = await bankAccountValidation(requestId)
+
+            if(response){
+                await User.updateOne(
+                    { _id: objectId },
+                    { 
+                    $set: {
+                        bankAccountNumber: accountNumber,
+                        ifscCode:ifscCode,
+                        bankAccountValidatedAt: new Date(),
+                    }
+                    }
+                );
+                res.json({message:"Bank account validated",isValid:true});
+            }else{
+                res.json({message:"Enter a valid bank account number",isValid:false});
+            }
+        }
+    }catch(error){
+        res.status(404).json({message:error,isValid:false});
     }
 }
 

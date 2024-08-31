@@ -1,5 +1,5 @@
 import axios from "axios";
-import { aadharRegex } from "./RegexFunctions";
+import { aadharRegex, bankRegex, ifscRegex, panRegex } from "./RegexFunctions";
 
 // validate otp function for the email
 export const validateOtpForEmail = async(
@@ -25,7 +25,7 @@ export const validateOtpForEmail = async(
             setErrorMessage("Invalid OTP, Try again!")
         }
     }catch(error){
-
+        return error;
     }
 };
 
@@ -54,7 +54,7 @@ export const validateOtpForPhoneNumber = async (
             setErrorMessage("Invalid OTP, Try again.")
         }
     }catch(error){
-
+        return error;
     }
 };
 
@@ -64,7 +64,7 @@ export const validateOtpForPhoneNumber = async (
 export const validateAadhaar =  async (
     userId:string,
     aadhaarNumber: string,
-    setValidStatus: (status: boolean, aadharNumber?: string) => void,
+    setValidStatus: (status: boolean) => void,
     setShowPopUp: (show: boolean) => void,
     setErrorMessage:(message:string) => void
 ) => {
@@ -79,26 +79,64 @@ export const validateAadhaar =  async (
         }
         setErrorMessage(response.data.message)
     }catch(error){
-
+        return error;
     }
 };
 
 
 
-// // validate otp function for pan card
-// export const validateOtpForPanCard = (
-//     otp: string,
-//     setValidStatus: (status: boolean, panNumber?: string) => void,
-//     panNumber: string,
-//     setIsEditable: (editable: boolean) => void,
-//     setShowOtpSection: (show: boolean) => void
-// ) => {
-//     if (otp === '123456') {
-//         setValidStatus(true , panNumber);
-//         setIsEditable(true);
-//         setShowOtpSection(false);
-//     } else {
-//         alert('Invalid OTP');
-//         setValidStatus(false);
-//     }
-// };
+// validate otp function for pan card
+export const validatePan = async(
+    userId:string,
+    panNumber: string,
+    setValidStatus: (status: boolean) => void,
+    setShowPopUp: (show: boolean) => void,
+    setErrorMessage:(message:string) => void
+) => {
+    if (!panNumber || !panRegex.test(panNumber)){
+        setErrorMessage("Enter a Valid Pan Number");
+    } 
+    try{
+        const response = await axios.post("http://localhost:3400/api/auth/validatePan",{ userId , panNumber})
+        if(response.data.isValid){
+            setValidStatus(true);
+            setShowPopUp(true);
+        }
+        setErrorMessage(response.data.message)
+    }catch(error){
+        return error;
+    }
+};
+
+
+// For bank validation
+export const bankAccountValidation = async(
+    userId:string,
+    accountNumber:string,
+    ifscCode:string,
+    setBankAccountNumber:(message:string)=>void,
+    setErrorMessage:(meassage:string)=>void,
+    setShowPopup:(status:boolean)=>void,
+    setIsValid:(status:boolean)=>void
+) => {
+    if(!bankRegex.test(accountNumber) || !ifscRegex.test(ifscCode)){
+        setErrorMessage("Enter a valid format document");
+    }
+
+    try{
+        const response = await axios.post("http://localhost:3400/api/auth/validateBankAccount", {userId,accountNumber,ifscCode});
+        if(!response.data.isValid){
+            setErrorMessage(response.data.message);
+            setIsValid(response.data.isValid);
+            setShowPopup(response.data.isValid);
+        }
+        else{
+            setIsValid(response.data.isValid);
+            setShowPopup(response.data.isValid);
+            setBankAccountNumber(accountNumber);
+        }
+    }
+    catch(error){
+        return error
+    }
+}
